@@ -1,0 +1,87 @@
+Enter password: ************
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 12
+Server version: 8.0.25 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use dbms;
+Database changed
+mysql> create VIEW view1 as SELECT order_no,order_date from salesorder;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> Desc view1;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| order_no   | varchar(20) | NO   |     | NULL    |       |
+| order_date | date        | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+2 rows in set (0.03 sec)
+
+mysql> SELECT* from view1;
++----------+------------+
+| order_no | order_date |
++----------+------------+
+| 0        | 2013-06-01 |
+| 01       | 2013-02-01 |
+| 02       | 2013-03-21 |
+| 03       | 2013-03-02 |
+| 04       | 2013-04-02 |
++----------+------------+
+5 rows in set (0.02 sec)
+
+mysql> insert into view1 values ('5','2013-11-10');
+ERROR 3819 (HY000): Check constraint 'salesorder_chk_1' is violated.
+mysql> create VIEW view2 as SELECT client_no,cname from clientmaster;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> INSERT INTO view2 VALUES(106,'Naithan');
+Query OK, 1 row affected (0.02 sec)
+
+mysql> create view view3 as SELECT * from salesmaster where city='mumbai';
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> create view view4 as SELECT cname,clientmaster.city as ccity,sname,salesmaster.city from salesmaster,clientmaster;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> desc view4;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| cname | varchar(20) | YES  |     | NULL    |       |
+| ccity | varchar(26) | YES  |     | NULL    |       |
+| sname | varchar(20) | YES  |     | NULL    |       |
+| city  | varchar(10) | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> insert into view4 values('Kunjuz','mumbai','Bichu','mumbai');
+ERROR 1394 (HY000): Can not insert into join view 'dbms.view4' without fields list
+mysql> create view view5 as SELECT cname,sname from view4;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> desc view5;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| cname | varchar(20) | YES  |     | NULL    |       |
+| sname | varchar(20) | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> insert into view5 values('Aby','Ronald');
+ERROR 1394 (HY000): Can not insert into join view 'dbms.view5' without fields list
+mysql> drop view view4;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> drop view view5;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql>
